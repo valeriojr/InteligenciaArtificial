@@ -21,32 +21,7 @@
 #include "missionaries.h"
 
 
-// Node name, State type, Actions ...
-DEFINE_STATE_SPACE(Missionary, MissionaryState,
-                   TakeOneMissionary,
-                   TakeOneCannibal,
-                   TakeTwoMissionaries,
-                   TakeTwoCannibals,
-                   TakeOneMissionaryAndOneCannibal)
-
-void MissionarySearchFinished(int success, Missionary* missionary);
-
-
-int main() {
-    MissionaryState initial = {
-            .side = 0,
-            .missionaries = {N_MISSIONARIES, 0},
-            .cannibals = {N_CANNIBALS, 0}
-    };
-
-    MissionaryStateGoal = MissionaryGoal;
-    MissionaryStateValidate = MissionaryValidate;
-    MissionaryStatePrint = MissionaryPrint;
-
-    MissionaryStateSearch(initial, MissionarySearchFinished); // prints the solution
-
-    return 0;
-}
+struct Missionary;
 
 void MissionarySearchFinished(int success, Missionary* missionary) {
     if (success) {
@@ -54,4 +29,62 @@ void MissionarySearchFinished(int success, Missionary* missionary) {
     } else {
         puts("Solution not found :c");
     }
+}
+
+MissionaryState TakeOneMissionary(MissionaryState parent) {
+    parent.missionaries[parent.side]--;
+    parent.missionaries[!parent.side]++;
+    parent.side = !parent.side;
+
+    return parent;
+}
+
+MissionaryState TakeOneCannibal(MissionaryState parent) {
+    parent.cannibals[parent.side]--;
+    parent.cannibals[!parent.side]++;
+    parent.side = !parent.side;
+
+    return parent;
+}
+
+MissionaryState TakeTwoMissionaries(MissionaryState parent) {
+    parent.missionaries[parent.side] -= 2;
+    parent.missionaries[!parent.side] += 2;
+    parent.side = !parent.side;
+
+    return parent;
+}
+
+MissionaryState TakeTwoCannibals(MissionaryState parent) {
+    parent.cannibals[parent.side] -= 2;
+    parent.cannibals[!parent.side] += 2;
+    parent.side = !parent.side;
+
+    return parent;
+}
+
+MissionaryState TakeOneMissionaryAndOneCannibal(MissionaryState parent) {
+    parent.missionaries[parent.side]--;
+    parent.missionaries[!parent.side]++;
+    parent.cannibals[parent.side]--;
+    parent.cannibals[!parent.side]++;
+    parent.side = !parent.side;
+    return parent;
+}
+
+void MissionaryPrint(MissionaryState *state) {
+    printf("|Side: %s\n", state->side ? "right" : "left");
+    printf("|Missionaries: left: %d, right: %d\n", state->missionaries[0], state->missionaries[1]);
+    printf("|Cannibals: left: %d, right: %d\n", state->cannibals[0], state->cannibals[1]);
+}
+
+int MissionaryValidate(MissionaryState *state) {
+    return between(0, state->missionaries[0], N_MISSIONARIES) && between(0, state->missionaries[1], N_MISSIONARIES) &&
+           between(0, state->cannibals[0], N_CANNIBALS) && between(0, state->cannibals[1], N_CANNIBALS) &&
+           ((state->missionaries[0] && state->missionaries[1]) ? (state->missionaries[0] >= state->cannibals[0] &&
+                                                                  state->missionaries[1] >= state->cannibals[1]) : 1);
+}
+
+int MissionaryGoal(MissionaryState *state) {
+    return state->missionaries[1] == N_MISSIONARIES && state->cannibals[1] == N_CANNIBALS;
 }

@@ -5,11 +5,13 @@
 #ifndef ARTIFICIALINTELLIGENCE_STATE_H
 #define ARTIFICIALINTELLIGENCE_STATE_H
 
+#include <ctype.h>
+
 
 /*
  * Define variáveis e funções utilizadas pelos algoritmos de acordo com o tipo passado.
  */
-#define DEFINE_STATE(STATE, ...)\
+#define DECLARE_STATE(STATE, ...)\
 /*
  * Interface para os operadores
  * Entrada: estado atual
@@ -81,7 +83,10 @@ STATE##ScoreFunction STATE##Score;\
  */\
 STATE##PrintFunction STATE##Print;\
 \
+void STATE##GetActionName(char* dest, int index);\
 \
+
+#define DEFINE_STATE(STATE, ...)\
 /*
  * Copia o nome do operador com índice index para o endereço dest
  */\

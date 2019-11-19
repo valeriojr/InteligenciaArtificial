@@ -8,6 +8,20 @@
 #include <stdlib.h>
 #include "../common/util.h"
 
+#define DECLARE_LINKED_LIST(TYPE)\
+typedef struct TYPE##ListNode TYPE##ListNode;\
+typedef struct TYPE##List TYPE##List;\
+\
+TYPE##ListNode* TYPE##ListNodeCreate(TYPE value);\
+void TYPE##ListFree(TYPE##List* list);\
+void TYPE##ListFree(TYPE##List* list);\
+void TYPE##ListMap(TYPE##List* list, void (*f)(TYPE*));\
+TYPE##ListNode* TYPE##ListAppend(TYPE##List* list, TYPE value);\
+TYPE* TYPE##ListFront(TYPE##List* list);\
+TYPE* TYPE##ListBack(TYPE##List* list);\
+void TYPE##ListPopFront(TYPE##List* list);\
+TYPE##List TYPE##ListCreate();\
+
 #define DEFINE_LINKED_LIST(TYPE)\
 \
 typedef struct TYPE##ListNode {\

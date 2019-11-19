@@ -8,6 +8,10 @@
 #include "../data_structures/linked_list.h"
 #include "../common/state.h"
 
+#define DECLARE_NODE(NAME, STATE)\
+typedef struct NAME NAME;\
+DECLARE_LINKED_LIST(NAME)\
+
 /*
 * Nó da fronteira/visitados. A estrutura de dados (nó) que a busca usa é separada do estado
 * state: estado do nó
@@ -27,12 +31,14 @@ typedef struct NAME{\
 DEFINE_LINKED_LIST(NAME)\
 
 
+#define DECLARE_STATE_SPACE(NODE, STATE, ...)\
+DECLARE_NODE(NODE, STATE)\
+DECLARE_STATE(STATE, __VA_ARGS__)\
+
 /*
 * Define o nó e o espaço de estados
 */
 #define DEFINE_STATE_SPACE(NODE, STATE, ...)\
-DEFINE_NODE(NODE, STATE);\
-DEFINE_STATE(STATE, ##__VA_ARGS__)\
 \
 /*
  * Realiza a busca no espaço de estados a partir de inicial e chama a função callback indicando se a solução foi
@@ -73,7 +79,7 @@ void STATE##Search(STATE initial,  void(*callback)(int, NODE*)) {\
         /*
         * Retira o próximo nó da fronteira
         */\
-        current_node = NODE##ListFront(&boundary);\
+        currentNode = NODE##ListFront(&boundary);\
         if(!currentNode) break;\
         /*
         * Verifica se ele é solução
@@ -106,7 +112,7 @@ void STATE##Search(STATE initial,  void(*callback)(int, NODE*)) {\
                 /*
                 * O pai é o nó da lista de visitados, não o da fronteira
                 */\
-                child.parent = current_node;\
+                child.parent = currentNode;\
                 child.depth++;\
                 child.cost++;\
                 NODE##ListAppend(&boundary, child);\

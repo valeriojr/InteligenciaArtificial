@@ -30,7 +30,7 @@ STATE STATE##HillClimb(STATE* initialSolution, int maxIterations){\
         */\
         int i, j;\
         STATE neighbors[STATE##ActionCount];\
-        for(i = 0, j = 0;i < STATE##ActionCount; i++){\
+        for(i = 0;i < STATE##ActionCount; i++){\
             STATE neighbor = STATE##Actions[i](currentBestSolution);\
             if(STATE##Validate(&neighbor)){\
                 neighbors[j++] = neighbor;\

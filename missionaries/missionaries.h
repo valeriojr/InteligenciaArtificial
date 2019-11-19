@@ -12,10 +12,13 @@
 #ifndef ARTIFICIALINTELLIGENCE_MISSIONARIES_H
 #define ARTIFICIALINTELLIGENCE_MISSIONARIES_H
 
+
+#include <stdio.h>
 #include "../common/util.h"
 
 #define N_MISSIONARIES 3
 #define N_CANNIBALS 3
+
 
 /*
  * side: margem em que o barco está (0: margem esquerda, 1: margem direita)
@@ -28,68 +31,38 @@ typedef struct MissionaryState {
     int cannibals[2];
 } MissionaryState;
 
-MissionaryState TakeOneMissionary(MissionaryState parent) {
-    parent.missionaries[parent.side]--;
-    parent.missionaries[!parent.side]++;
-    parent.side = !parent.side;
+MissionaryState TakeOneMissionary(MissionaryState parent);
 
-    return parent;
-}
+MissionaryState TakeOneCannibal(MissionaryState parent);
 
-MissionaryState TakeOneCannibal(MissionaryState parent) {
-    parent.cannibals[parent.side]--;
-    parent.cannibals[!parent.side]++;
-    parent.side = !parent.side;
+MissionaryState TakeTwoMissionaries(MissionaryState parent);
 
-    return parent;
-}
+MissionaryState TakeTwoCannibals(MissionaryState parent);
 
-MissionaryState TakeTwoMissionaries(MissionaryState parent) {
-    parent.missionaries[parent.side] -= 2;
-    parent.missionaries[!parent.side] += 2;
-    parent.side = !parent.side;
+MissionaryState TakeOneMissionaryAndOneCannibal(MissionaryState parent);
 
-    return parent;
-}
+DECLARE_NODE(Missionary, MissionaryState);
+DECLARE_STATE(MissionaryState,TakeOneMissionary,
+              TakeOneCannibal,
+              TakeTwoMissionaries,
+              TakeTwoCannibals,
+              TakeOneMissionaryAndOneCannibal);
 
-MissionaryState TakeTwoCannibals(MissionaryState parent) {
-    parent.cannibals[parent.side] -= 2;
-    parent.cannibals[!parent.side] += 2;
-    parent.side = !parent.side;
 
-    return parent;
-}
-
-MissionaryState TakeOneMissionaryAndOneCannibal(MissionaryState parent) {
-    parent.missionaries[parent.side]--;
-    parent.missionaries[!parent.side]++;
-    parent.cannibals[parent.side]--;
-    parent.cannibals[!parent.side]++;
-    parent.side = !parent.side;
-    return parent;
-}
-
-void MissionaryPrint(MissionaryState* state) {
-    printf("|Side: %s\n", state->side ? "right" : "left");
-    printf("|Missionaries: left: %d, right: %d\n", state->missionaries[0], state->missionaries[1]);
-    printf("|Cannibals: left: %d, right: %d\n", state->cannibals[0], state->cannibals[1]);
-}
+void MissionaryPrint(MissionaryState *state);
 
 /*
  * Verifica se a restrição do número de missionários em relação ao número de canibais está sendo respeitada
  */
-int MissionaryValidate(MissionaryState* state) {
-    return between(0, state->missionaries[0], N_MISSIONARIES) && between(0, state->missionaries[1], N_MISSIONARIES) &&
-           between(0, state->cannibals[0], N_CANNIBALS) && between(0, state->cannibals[1], N_CANNIBALS) &&
-           ((state->missionaries[0] && state->missionaries[1]) ? (state->missionaries[0] >= state->cannibals[0] &&
-                                      state->missionaries[1] >= state->cannibals[1]) : 1);
-}
+int MissionaryValidate(MissionaryState *state);
 
 /*
  * Verifica se todos os missionários e todos os canibais estão do outro lado do rio.
  */
-int MissionaryGoal(MissionaryState* state) {
-    return state->missionaries[1] == N_MISSIONARIES && state->cannibals[1] == N_CANNIBALS;
-}
+int MissionaryGoal(MissionaryState *state);
+
+void MissionarySearchFinished(int success, Missionary *missionary);
+
+void MissionaryStatePrintSolution(Missionary*);
 
 #endif //ARTIFICIALINTELLIGENCE_MISSIONARIES_H
