@@ -12,7 +12,7 @@
 #ifndef ARTIFICIALINTELLIGENCE_MISSIONARIES_H
 #define ARTIFICIALINTELLIGENCE_MISSIONARIES_H
 
-#include "util.h"
+#include "../common/util.h"
 
 #define N_MISSIONARIES 3
 #define N_CANNIBALS 3

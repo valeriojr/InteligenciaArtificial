@@ -5,8 +5,8 @@
 #ifndef ARTIFICIAL_INTELLIGENCE_TRAVELLING_SALESMAN_H
 #define ARTIFICIAL_INTELLIGENCE_TRAVELLING_SALESMAN_H
 
-#include "util.h"
-#include "state.h"
+#include "../common/util.h"
+#include "../common/state.h"
 
 #define N_CITIES 10
 

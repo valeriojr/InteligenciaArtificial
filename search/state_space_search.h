@@ -5,8 +5,8 @@
 #ifndef ARTIFICIAL_INTELLIGENCE_STATE_SPACE_SEARCH_H
 #define ARTIFICIAL_INTELLIGENCE_STATE_SPACE_SEARCH_H
 
-#include "linked_list.h"
-#include "state.h"
+#include "../data_structures/linked_list.h"
+#include "../common/state.h"
 
 /*
 * Nó da fronteira/visitados. A estrutura de dados (nó) que a busca usa é separada do estado

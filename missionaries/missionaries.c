@@ -17,7 +17,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#include "state_space_search.h"
+#include "../search/state_space_search.h"
 #include "missionaries.h"
 
 

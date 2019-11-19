@@ -6,8 +6,8 @@
 #define ARTIFICIAL_INTELLIGENCE_MINIMAX_H
 
 #include <limits.h>
-#include "state.h"
-#include "util.h"
+#include "../common/state.h"
+#include "../common/util.h"
 
 enum {
     MIN,

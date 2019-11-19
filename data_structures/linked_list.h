@@ -6,7 +6,7 @@
 #define ARTIFICIALINTELLIGENCE_LINKED_LIST_H
 
 #include <stdlib.h>
-#include "util.h"
+#include "../common/util.h"
 
 #define DEFINE_LINKED_LIST(TYPE)\
 \

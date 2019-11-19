@@ -6,7 +6,7 @@
 #define ARTIFICIALINTELLIGENCE_TICTACTOE_H
 
 #include <limits.h>
-#include "util.h"
+#include "../common/util.h"
 
 #define TIC_TAC_TOE_MOVE(ROW, COLUMN)\
 TicTacToeState Mark##ROW##COLUMN (TicTacToeState parent){\

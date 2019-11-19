@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <ctype.h>
-#include "linked_list.h"
-#include "state_space_search.h"
+#include "../data_structures/linked_list.h"
+#include "../search/state_space_search.h"
 #include "tic_tac_toe.h"
-#include "minimax.h"
+#include "../search/minimax.h"
 
 DEFINE_MINIMAX(TicTacToeState,
                MarkTopLeft,

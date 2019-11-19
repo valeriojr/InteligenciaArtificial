@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "hill_climbing.h"
+#include "../search/hill_climbing.h"
 #include "travelling_salesman.h"
 
 DEFINE_HILL_CLIMBING(Route)
