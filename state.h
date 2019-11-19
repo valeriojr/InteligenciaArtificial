@@ -39,6 +39,14 @@ typedef int (*STATE##GoalFunction)(STATE*);\
 typedef void (*STATE##PrintFunction)(STATE*);\
 \
 /*
+ * Interface para avaliação de estados
+ * Entrada: endereço do estado
+ * Saída: avaliação do estado
+ */\
+typedef float (*STATE##ScoreFunction)(STATE*);\
+\
+\
+/*
  * Lista dos operadores
  */\
 STATE##Action STATE##Actions[] = {__VA_ARGS__};\
@@ -64,9 +72,15 @@ STATE##ValidationFunction STATE##Validate;\
 STATE##GoalFunction STATE##Goal;\
 \
 /*
+ * Função de avaliação (obrigatória)
+ */\
+STATE##ScoreFunction STATE##Score;\
+\
+/*
  * Função de imprimir estado (opcional)
  */\
 STATE##PrintFunction STATE##Print;\
+\
 \
 /*
  * Copia o nome do operador com índice index para o endereço dest

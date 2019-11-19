@@ -81,12 +81,6 @@ int validateBoard(TicTacToeState* state) {
             }
         }
     }
-/*
-    TicTacToeState copy = *state;
-    copy.player = !copy.player;
-    if(goalBoard(&copy)){
-       return 0;
-    }*/
 
     return 1;
 }
@@ -210,12 +204,8 @@ int diagScore(TicTacToeState* state, int diag, int p) {
     return score;
 }
 
-int ticTacToeScore(TicTacToeState* state) {
-    //puts("-------");
-    //print_board(state);
-    //puts("-------");
-
-    int score = 0;
+float ticTacToeScore(TicTacToeState* state) {
+    float score = 0;
 
     if (goalBoard(state)) {
         return INT_MAX;
@@ -237,8 +227,6 @@ int ticTacToeScore(TicTacToeState* state) {
             }
         }
     }
-
-    //printf("Score: %d\n", score);
 
     return score;
 }

@@ -16,55 +16,52 @@ enum {
 
 #define DEFINE_MINIMAX(STATE, ...)\
 DEFINE_STATE(STATE, __VA_ARGS__)\
-typedef int (*STATE##ScoreFunction)(STATE*);\
-\
-STATE##ScoreFunction STATE##Score;\
-int STATE##MinimaxSearch(STATE* current_state, int turn, int depth, int* child){\
+int STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child){\
     if(!depth){\
-        return STATE##Score(current_state);\
+        return STATE##Score(currentState);\
     }\
     int alpha;\
-    int child_count = 0;\
+    int childCount = 0;\
     \
     if(turn == MAX){\
         alpha = INT_MIN;\
         \
         int i;\
         for(i = 0;i < STATE##ActionCount;i++){\
-            STATE child_state = STATE##Actions[i](*current_state);\
-            if(!STATE##Validate(&child_state)){\
+            STATE childState = STATE##Actions[i](*currentState);\
+            if(!STATE##Validate(&childState)){\
                 continue;\
             }\
-            child_count++;\
-            int score = STATE##MinimaxSearch(&child_state, !turn, depth - 1, child);\
+            childCount++;\
+            int score = STATE##MinimaxSearch(&childState, !turn, depth - 1, child);\
             if(score > alpha){\
                 alpha = score;\
                 *child = i;\
             }\
         }\
-        return child_count ? alpha : STATE##Score(current_state);\
+        return childCount ? alpha : STATE##Score(currentState);\
     }\
     else {\
         alpha = INT_MAX;\
         \
         int i;\
         for(i = 0;i < STATE##ActionCount;i++){\
-            STATE child_state = STATE##Actions[i](*current_state);\
-            if(!STATE##Validate(&child_state)){\
+            STATE childState = STATE##Actions[i](*currentState);\
+            if(!STATE##Validate(&childState)){\
                 continue;\
             }\
-            child_count++;\
-            int score = STATE##MinimaxSearch(&child_state, !turn, depth - 1, child);\
+            childCount++;\
+            int score = STATE##MinimaxSearch(&childState, !turn, depth - 1, child);\
             if(score < alpha){\
                 alpha = score;\
                 *child = i;\
             }\
         }\
-        return child_count ? alpha : STATE##Score(current_state);\
+        return childCount ? alpha : STATE##Score(currentState);\
     }\
 }\
 \
-void STATE##Minimax(STATE* current_state, int depth, void(*callback)(int, int, STATE*)){\
+void STATE##Minimax(STATE* currentState, int depth, void(*callback)(int, int, STATE*)){\
     if(STATE##Score == NULL){\
         printf("Undefined GOAL and/or VALIDATION function(s)!\n");\
         if(callback) callback(-1, INT_MIN, NULL);\
@@ -72,10 +69,10 @@ void STATE##Minimax(STATE* current_state, int depth, void(*callback)(int, int, S
     }\
     int actionIndex = -1;\
     \
-    int score = STATE##MinimaxSearch(current_state, MAX, depth, &actionIndex);\
+    int score = STATE##MinimaxSearch(currentState, MAX, depth, &actionIndex);\
     getchar();\
     if(actionIndex >= 0){\
-        callback(actionIndex, score, current_state);\
+        callback(actionIndex, score, currentState);\
     }\
 }\
 \

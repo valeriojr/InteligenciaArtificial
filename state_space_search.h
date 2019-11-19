@@ -65,22 +65,22 @@ void STATE##Search(STATE initial,  void(*callback)(int, NODE*)) {\
     };\
     NODE##ListAppend(&boundary, s);\
     \
-    NODE* current_node = NODE##ListFront(&boundary);\
+    NODE* currentNode = NODE##ListFront(&boundary);\
     \
     int success = 0;\
     \
-    while (current_node && !success) {\
+    while (currentNode && !success) {\
         /*
         * Retira o próximo nó da fronteira
         */\
         current_node = NODE##ListFront(&boundary);\
-        if(!current_node) break;\
+        if(!currentNode) break;\
         /*
         * Verifica se ele é solução
         */\
-        if (STATE##Goal(&current_node->state)) {\
+        if (STATE##Goal(&currentNode->state)) {\
             if(callback){\
-                callback(1, current_node);\
+                callback(1, currentNode);\
             }\
             success = 1;\
             break;\
@@ -90,18 +90,18 @@ void STATE##Search(STATE initial,  void(*callback)(int, NODE*)) {\
         * Coloca na lista de visitados (cria uma cópia do nó que estava na fronteira para poder construir o caminho da
         * solução)
         */\
-        NODE##ListAppend(&visited, *current_node);\
-        current_node = NODE##ListBack(&visited);\
+        NODE##ListAppend(&visited, *currentNode);\
+        currentNode = NODE##ListBack(&visited);\
         \
         /*
         * Gera os filhos
         */\
         int i;\
         for(i = 0;i < STATE##ActionCount;i++){\
-            NODE child = *current_node;\
-            STATE child_state = STATE##Actions[i](child.state);\
-            if (STATE##Validate(&child_state)) {\
-                child.state = child_state;\
+            NODE child = *currentNode;\
+            STATE childState = STATE##Actions[i](child.state);\
+            if (STATE##Validate(&childState)) {\
+                child.state = childState;\
                 child.index = i;\
                 /*
                 * O pai é o nó da lista de visitados, não o da fronteira
