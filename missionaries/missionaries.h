@@ -9,16 +9,22 @@
  *
  */
 
-#ifndef ARTIFICIALINTELLIGENCE_MISSIONARIES_H
-#define ARTIFICIALINTELLIGENCE_MISSIONARIES_H
+#ifndef ARTIFICIAL_INTELLIGENCE_MISSIONARIES_H
+#define ARTIFICIAL_INTELLIGENCE_MISSIONARIES_H
 
 
 #include <stdio.h>
+#include "../search/state_space_search.h"
 #include "../common/util.h"
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Constantes
 
 #define N_MISSIONARIES 3
 #define N_CANNIBALS 3
 
+//----------------------------------------------------------------------------------------------------------------------
 
 /*
  * side: margem em que o barco está (0: margem esquerda, 1: margem direita)
@@ -31,6 +37,8 @@ typedef struct MissionaryState {
     int cannibals[2];
 } MissionaryState;
 
+//----------------------------------------------------------------------------------------------------------------------
+
 MissionaryState TakeOneMissionary(MissionaryState parent);
 
 MissionaryState TakeOneCannibal(MissionaryState parent);
@@ -41,28 +49,35 @@ MissionaryState TakeTwoCannibals(MissionaryState parent);
 
 MissionaryState TakeOneMissionaryAndOneCannibal(MissionaryState parent);
 
-DECLARE_NODE(Missionary, MissionaryState);
-DECLARE_STATE(MissionaryState,TakeOneMissionary,
-              TakeOneCannibal,
-              TakeTwoMissionaries,
-              TakeTwoCannibals,
-              TakeOneMissionaryAndOneCannibal);
+//----------------------------------------------------------------------------------------------------------------------
 
+DECLARE_STATE_SPACE(Missionary, MissionaryState,
+                    TakeOneMissionary,
+                    TakeOneCannibal,
+                    TakeTwoMissionaries,
+                    TakeTwoCannibals,
+                    TakeOneMissionaryAndOneCannibal);
 
-void MissionaryPrint(MissionaryState *state);
+//----------------------------------------------------------------------------------------------------------------------
 
 /*
  * Verifica se a restrição do número de missionários em relação ao número de canibais está sendo respeitada
  */
-int MissionaryValidate(MissionaryState *state);
+int MissionaryValidate(MissionaryState* state);
 
 /*
  * Verifica se todos os missionários e todos os canibais estão do outro lado do rio.
  */
-int MissionaryGoal(MissionaryState *state);
+int MissionaryGoal(MissionaryState* state);
 
-void MissionarySearchFinished(int success, Missionary *missionary);
+/*
+ * Imprime o estado na tela
+ */
+void MissionaryPrint(MissionaryState* state);
 
-void MissionaryStatePrintSolution(Missionary*);
+/*
+ * Imprime a solução
+ */
+void MissionarySearchFinished(int success, Missionary* missionary);
 
 #endif //ARTIFICIALINTELLIGENCE_MISSIONARIES_H

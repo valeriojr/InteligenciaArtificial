@@ -2,8 +2,8 @@
 // Created by Valerio on 26/10/2019.
 //
 
-#ifndef ARTIFICIALINTELLIGENCE_UTIL_H
-#define ARTIFICIALINTELLIGENCE_UTIL_H
+#ifndef ARTIFICIAL_INTELLIGENCE_UTIL_H
+#define ARTIFICIAL_INTELLIGENCE_UTIL_H
 
 #include <string.h>
 
@@ -22,8 +22,5 @@ b = __aux__;\
 
 #define between(a, x, b) (x >= a && x <= b)
 
-void tocamelcase(char* str){
 
-}
-
-#endif //ARTIFICIALINTELLIGENCE_UTIL_H
+#endif //ARTIFICIAL_INTELLIGENCE_UTIL_H

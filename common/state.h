@@ -2,8 +2,8 @@
 // Created by Valerio on 17/11/2019.
 //
 
-#ifndef ARTIFICIALINTELLIGENCE_STATE_H
-#define ARTIFICIALINTELLIGENCE_STATE_H
+#ifndef ARTIFICIAL_INTELLIGENCE_STATE_H
+#define ARTIFICIAL_INTELLIGENCE_STATE_H
 
 #include <ctype.h>
 
@@ -51,42 +51,49 @@ typedef float (*STATE##ScoreFunction)(STATE*);\
 /*
  * Lista dos operadores
  */\
-STATE##Action STATE##Actions[] = {__VA_ARGS__};\
+extern STATE##Action STATE##Actions[];\
 \
 /*
  * Número total de operadores
  */\
-int STATE##ActionCount = sizeof(STATE##Actions) / sizeof(STATE##Action);\
+extern int STATE##ActionCount;\
 \
 /*
  * Nomes dos operadores (usado para imprimir solução)
  */\
-char STATE##ActionNames[] = #__VA_ARGS__;\
+extern char STATE##ActionNames[];\
 \
 /*
  * Função de validação (obrigatória)
  */\
-STATE##ValidationFunction STATE##Validate;\
+extern STATE##ValidationFunction STATE##Validate;\
 \
 /*
  * Função de validação (obrigatória)
  */\
-STATE##GoalFunction STATE##Goal;\
+extern STATE##GoalFunction STATE##Goal;\
 \
 /*
  * Função de avaliação (obrigatória)
  */\
-STATE##ScoreFunction STATE##Score;\
+extern STATE##ScoreFunction STATE##Score;\
 \
 /*
  * Função de imprimir estado (opcional)
  */\
-STATE##PrintFunction STATE##Print;\
+extern STATE##PrintFunction STATE##Print;\
 \
 void STATE##GetActionName(char* dest, int index);\
 \
 
 #define DEFINE_STATE(STATE, ...)\
+STATE##Action STATE##Actions[] = {__VA_ARGS__};\
+int STATE##ActionCount = sizeof(STATE##Actions) / sizeof(STATE##Action);\
+char STATE##ActionNames[] = #__VA_ARGS__;\
+STATE##ValidationFunction STATE##Validate;\
+STATE##GoalFunction STATE##Goal;\
+STATE##ScoreFunction STATE##Score;\
+STATE##PrintFunction STATE##Print;\
 /*
  * Copia o nome do operador com índice index para o endereço dest
  */\

@@ -17,11 +17,15 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#include "../search/state_space_search.h"
 #include "missionaries.h"
 
 
-struct Missionary;
+DEFINE_STATE_SPACE(Missionary, MissionaryState,
+                   TakeOneCannibal,
+                   TakeTwoCannibals,
+                   TakeOneMissionary,
+                   TakeTwoMissionaries,
+                   TakeOneMissionaryAndOneCannibal)
 
 void MissionarySearchFinished(int success, Missionary* missionary) {
     if (success) {
@@ -72,19 +76,19 @@ MissionaryState TakeOneMissionaryAndOneCannibal(MissionaryState parent) {
     return parent;
 }
 
-void MissionaryPrint(MissionaryState *state) {
+void MissionaryPrint(MissionaryState* state) {
     printf("|Side: %s\n", state->side ? "right" : "left");
     printf("|Missionaries: left: %d, right: %d\n", state->missionaries[0], state->missionaries[1]);
     printf("|Cannibals: left: %d, right: %d\n", state->cannibals[0], state->cannibals[1]);
 }
 
-int MissionaryValidate(MissionaryState *state) {
+int MissionaryValidate(MissionaryState* state) {
     return between(0, state->missionaries[0], N_MISSIONARIES) && between(0, state->missionaries[1], N_MISSIONARIES) &&
            between(0, state->cannibals[0], N_CANNIBALS) && between(0, state->cannibals[1], N_CANNIBALS) &&
            ((state->missionaries[0] && state->missionaries[1]) ? (state->missionaries[0] >= state->cannibals[0] &&
                                                                   state->missionaries[1] >= state->cannibals[1]) : 1);
 }
 
-int MissionaryGoal(MissionaryState *state) {
+int MissionaryGoal(MissionaryState* state) {
     return state->missionaries[1] == N_MISSIONARIES && state->cannibals[1] == N_CANNIBALS;
 }

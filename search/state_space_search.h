@@ -34,11 +34,17 @@ DEFINE_LINKED_LIST(NAME)\
 #define DECLARE_STATE_SPACE(NODE, STATE, ...)\
 DECLARE_NODE(NODE, STATE)\
 DECLARE_STATE(STATE, __VA_ARGS__)\
+\
+void STATE##Search(STATE initial,  void(*callback)(int, NODE*));\
+\
+void STATE##PrintSolution(NODE* node);\
 
 /*
 * Define o nó e o espaço de estados
 */
 #define DEFINE_STATE_SPACE(NODE, STATE, ...)\
+DEFINE_NODE(NODE, STATE)\
+DEFINE_STATE(STATE, __VA_ARGS__)\
 \
 /*
  * Realiza a busca no espaço de estados a partir de inicial e chama a função callback indicando se a solução foi
