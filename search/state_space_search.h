@@ -33,7 +33,7 @@ DEFINE_LINKED_LIST(NAME)\
 
 #define DECLARE_STATE_SPACE(NODE, STATE, ...)\
 DECLARE_NODE(NODE, STATE)\
-DECLARE_STATE(STATE, __VA_ARGS__)\
+DECLARE_STATE(STATE)\
 \
 void STATE##Search(STATE initial,  void(*callback)(int, NODE*));\
 \

@@ -2,28 +2,17 @@
 // Created by ValérioRodrigues on 19/11/2019.
 //
 #include <stdio.h>
-#include "../search/minimax.h"
 #include "tic_tac_toe.h"
 
-
-DEFINE_MINIMAX(TicTacToeState,
-               MarkTopLeft,
-               MarkTopCenter,
-               MarkTopRight,
-               MarkCenterLeft,
-               MarkCenterCenter,
-               MarkCenterRight,
-               MarkBottomLeft,
-               MarkBottomCenter,
-               MarkBottomRight)
 
 int main() {
     TicTacToeStateGoal = goalBoard;
     TicTacToeStateValidate = validateBoard;
-    TicTacToeStatePrint = print_board;
+    TicTacToeStatePrint = printBoard;
     TicTacToeStateScore = ticTacToeScore;
 
-    print_board(&match);
+    printBoard(&match);
+
     while (!goalBoard(&match) && !loseBoard(&match) && !drawBoard(&match)) {
         if (match.player == X) {
             int position;
@@ -40,15 +29,13 @@ int main() {
                 next = Mark(position / 3, position % 3, match);
             }
 
-            print_board(&match);
             match = next;
             TicTacToeCurrentPlayer = match.player;
+            printBoard(&match);
         } else {
             TicTacToeStateMinimax(&match, DEPTH, TicTacToeMakeMove);
         }
     }
-
-    print_board(&match);
 
     if (TicTacToeCurrentPlayer == X) {
         puts("Bolas! Voce perdeu!");

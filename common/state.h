@@ -11,7 +11,7 @@
 /*
  * Define variáveis e funções utilizadas pelos algoritmos de acordo com o tipo passado.
  */
-#define DECLARE_STATE(STATE, ...)\
+#define DECLARE_STATE(STATE)\
 /*
  * Interface para os operadores
  * Entrada: estado atual

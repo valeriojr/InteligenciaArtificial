@@ -5,12 +5,43 @@
 #include "tic_tac_toe.h"
 #include "../search/minimax.h"
 
+#define DEFINE_TIC_TAC_TOE_MOVE(ROW, COLUMN)\
+TicTacToeState Mark##ROW##COLUMN (TicTacToeState parent){\
+    if(parent.board[ROW][COLUMN] == EMPTY){\
+        parent.board[ROW][COLUMN] = parent.player;\
+    }\
+    else {\
+        parent.board[ROW][COLUMN] = INVALID;\
+    }\
+    \
+    parent.player = !parent.player;\
+    \
+    return parent;\
+}\
+
+int TicTacToeCurrentPlayer = X;
+TicTacToeState match = {
+        .player = X,
+        .board = {EMPTY, EMPTY, EMPTY,
+                  EMPTY, EMPTY, EMPTY,
+                  EMPTY, EMPTY, EMPTY}
+};
+
+DEFINE_MINIMAX(TicTacToeState,
+               MarkTopLeft,
+               MarkTopCenter,
+               MarkTopRight,
+               MarkCenterLeft,
+               MarkCenterCenter,
+               MarkCenterRight,
+               MarkBottomLeft,
+               MarkBottomCenter,
+               MarkBottomRight)
 
 void TicTacToeMakeMove(int actionIndex, int score, TicTacToeState* state) {
     match = TicTacToeStateActions[actionIndex](match);
     TicTacToeCurrentPlayer = match.player;
-
-    print_board(&match);
+    printBoard(&match);
 }
 
 TicTacToeState Mark(int row, int col, TicTacToeState state) {
@@ -69,9 +100,10 @@ int goalBoard(TicTacToeState *state) {
     return won;
 }
 
-void print_board(TicTacToeState *state) {
+void printBoard(TicTacToeState* state) {
     int i, j;
 
+    printf("\n");
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
             char s[6];
@@ -93,6 +125,7 @@ void print_board(TicTacToeState *state) {
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 int drawBoard(TicTacToeState *state) {
@@ -184,3 +217,21 @@ int loseBoard(TicTacToeState *state) {
     TicTacToeCurrentPlayer = !TicTacToeCurrentPlayer;
     return r;
 }
+
+DEFINE_TIC_TAC_TOE_MOVE(Top, Left);
+
+DEFINE_TIC_TAC_TOE_MOVE(Top, Center);
+
+DEFINE_TIC_TAC_TOE_MOVE(Top, Right);
+
+DEFINE_TIC_TAC_TOE_MOVE(Center, Left);
+
+DEFINE_TIC_TAC_TOE_MOVE(Center, Center);
+
+DEFINE_TIC_TAC_TOE_MOVE(Center, Right);
+
+DEFINE_TIC_TAC_TOE_MOVE(Bottom, Left);
+
+DEFINE_TIC_TAC_TOE_MOVE(Bottom, Center);
+
+DEFINE_TIC_TAC_TOE_MOVE(Bottom, Right);

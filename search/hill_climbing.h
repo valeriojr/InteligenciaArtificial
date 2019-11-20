@@ -7,8 +7,8 @@
 
 #include <math.h>
 
-
-typedef struct STATE STATE;
+#define DECLARE_HILL_CLIMBING(STATE)\
+STATE STATE##HillClimb(STATE* initialSolution, int maxIterations);\
 
 #define DEFINE_HILL_CLIMBING(STATE)\
 STATE STATE##HillClimb(STATE* initialSolution, int maxIterations){\
@@ -24,11 +24,12 @@ STATE STATE##HillClimb(STATE* initialSolution, int maxIterations){\
     STATE currentBestSolution = *initialSolution;\
     float currentBestScore = STATE##Score(initialSolution);\
     \
-    while(maxIterations--){\
+    int iterations = 0;\
+    while(iterations++ < maxIterations){\
         /*
         * Gera as soluções vizinhas
         */\
-        int i, j;\
+        int i, j = 0;\
         STATE neighbors[STATE##ActionCount];\
         for(i = 0;i < STATE##ActionCount; i++){\
             STATE neighbor = STATE##Actions[i](currentBestSolution);\

@@ -14,6 +14,12 @@ enum {
     MAX
 };
 
+#define DECLARE_MINIMAX(STATE, ...)\
+DECLARE_STATE(STATE)\
+int STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child);\
+\
+void STATE##Minimax(STATE* currentState, int depth, void(*callback)(int, int, STATE*));\
+
 #define DEFINE_MINIMAX(STATE, ...)\
 DEFINE_STATE(STATE, __VA_ARGS__)\
 int STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child){\
