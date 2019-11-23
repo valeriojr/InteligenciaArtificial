@@ -5,6 +5,14 @@
 #include "missionaries.h"
 #include "../search/state_space_search.h"
 
+static float score(MissionaryState* state){
+    return 1.0f;
+}
+
+static float heuristic(MissionaryState* state){
+    return 1.0f;
+}
+
 
 int main() {
     MissionaryState initial = {
@@ -16,8 +24,10 @@ int main() {
     MissionaryStateGoal = MissionaryGoal;
     MissionaryStateValidate = MissionaryValidate;
     MissionaryStatePrint = MissionaryPrint;
+    MissionaryStateHeuristic = heuristic;
+    MissionaryStateScore = score;
 
-    MissionaryStateSearch(initial, MissionarySearchFinished); // prints the solution
+    MissionaryStateAStar(initial, MissionarySearchFinished); // prints the solution
 
     return 0;
 }

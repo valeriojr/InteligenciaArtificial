@@ -6,11 +6,14 @@
 #define ARTIFICIAL_INTELLIGENCE_STATE_SPACE_SEARCH_H
 
 #include "../data_structures/linked_list.h"
+#include "../data_structures/heap.h"
 #include "../common/state.h"
+#include "../common/util.h"
 
 #define DECLARE_NODE(NAME, STATE)\
 typedef struct NAME NAME;\
 DECLARE_LINKED_LIST(NAME)\
+DECLARE_HEAP(NAME)\
 
 /*
 * Nó da fronteira/visitados. A estrutura de dados (nó) que a busca usa é separada do estado
@@ -29,13 +32,16 @@ typedef struct NAME{\
     float cost;\
 } NAME;\
 DEFINE_LINKED_LIST(NAME)\
+DEFINE_HEAP(NAME, 1000000)\
 
 
 #define DECLARE_STATE_SPACE(NODE, STATE, ...)\
 DECLARE_NODE(NODE, STATE)\
 DECLARE_STATE(STATE)\
 \
-void STATE##Search(STATE initial,  void(*callback)(int, NODE*));\
+void STATE##Search(STATE initial, void(*callback)(int, NODE*));\
+\
+void STATE##AStar(STATE initial, void(*callback)(int, NODE*));\
 \
 void STATE##PrintSolution(NODE* node);\
 
@@ -147,6 +153,7 @@ void STATE##Search(STATE initial,  void(*callback)(int, NODE*)) {\
 * Imprime a solução em pré-ordem (do estado inicial ao estado final)
 */\
 void STATE##PrintSolution(NODE* node) {\
+    static int step = 1;\
     if(!STATE##Print){\
         printf("Undefined PRINT function!\n");\
         return;\
@@ -160,16 +167,113 @@ void STATE##PrintSolution(NODE* node) {\
         puts("Initial State:");\
         STATE##Print(&node->state);\
         printf("\n");\
+        step = 1;\
     }\
     if (node->index >= 0) {\
         char actionName[256] = "";\
         STATE##GetActionName(actionName, node->index);\
         int i;\
         for (i = 0; isspace(actionName[i]); i++);\
-        printf("*%s\n", actionName + i);\
+        printf("Step %d: ", step++);\
+        prettyPrint(actionName + i);\
+        printf("\n");\
         STATE##Print(&node->state);\
         printf("\n");\
     }\
+}\
+\
+/*
+ * A* algorithm
+ */\
+int STATE##BoundaryHeapProperty(NODE a, NODE b){\
+    return (a.cost + STATE##Heuristic(&a.state)) < (b.cost + STATE##Heuristic(&b.state));\
+}\
+\
+void STATE##AStar(STATE initial,  void(*callback)(int, NODE*)) {\
+    /*
+    * Verifica se as funções de validação e de objetivo foram definidas
+    */\
+    if(!STATE##Goal || !STATE##Validate || !STATE##Score || !STATE##Heuristic){\
+        printf("Undefined [GOAL || VALIDATION || SCORE || HEURISTIC] function(s)!\n");\
+        if(callback) callback(0, NULL);\
+        return;\
+    }\
+    /*
+    * Fronteira e lista de nós visitados
+    */\
+    \
+    NODE##Heap boundary = NODE##HeapCreate(STATE##BoundaryHeapProperty);\
+    NODE##List visited = NODE##ListCreate();\
+    \
+    /*
+    * Nó inicial
+    */\
+    NODE s = {\
+            .state = initial,\
+            .cost = 0,\
+            .depth = 0,\
+            .index = -1,\
+            .parent = NULL\
+    };\
+    NODE##HeapInsert(&boundary, s);\
+    \
+    int success = 0;\
+    \
+    while (boundary.size && !success) {\
+        /*
+        * Retira o próximo nó da fronteira
+        */\
+        int j;\
+        NODE currentNode = NODE##HeapRemove(&boundary);\
+        /*
+        * Verifica se ele é solução
+        */\
+        if (STATE##Goal(&currentNode.state)) {\
+            if(callback){\
+                callback(1, &currentNode);\
+            }\
+            success = 1;\
+            break;\
+        }\
+        \
+        /*
+        * Coloca na lista de visitados (cria uma cópia do nó que estava na fronteira para poder construir o caminho da
+        * solução)
+        */\
+        NODE##ListAppend(&visited, currentNode);\
+        NODE* parentNode = NODE##ListBack(&visited);\
+        \
+        /*
+        * Gera os filhos
+        */\
+        int i;\
+        for(i = 0;i < STATE##ActionCount;i++){\
+            NODE child = *parentNode;\
+            STATE childState = STATE##Actions[i](child.state);\
+            if (STATE##Validate(&childState)) {\
+                child.state = childState;\
+                child.index = i;\
+                /*
+                * O pai é o nó da lista de visitados, não o da fronteira
+                */\
+                child.parent = parentNode;\
+                child.depth++;\
+                child.cost += STATE##Score(&childState);\
+                NODE##HeapInsert(&boundary, child);\
+            }\
+        }\
+    }\
+    \
+    /*
+    * Solução não encontrada
+    */\
+    if(callback && !success){callback(0, NULL);}\
+    \
+    /*
+    * Libera os nós visitados e a fronteira da memória
+    */\
+    NODE##HeapFree(&boundary);\
+    NODE##ListFree(&visited);\
 }\
 
 #endif //ARTIFICIAL_INTELLIGENCE_STATE_SPACE_SEARCH_H

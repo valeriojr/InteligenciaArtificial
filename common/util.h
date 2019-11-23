@@ -5,8 +5,6 @@
 #ifndef ARTIFICIAL_INTELLIGENCE_UTIL_H
 #define ARTIFICIAL_INTELLIGENCE_UTIL_H
 
-#include <string.h>
-
 #define NEW(TYPE) (TYPE*)(malloc(sizeof(TYPE)))
 #define NEW_ARRAY(TYPE, COUNT) (TYPE*)(malloc(COUNT * sizeof(TYPE)))
 
@@ -22,5 +20,6 @@ b = __aux__;\
 
 #define between(a, x, b) (x >= a && x <= b)
 
+void prettyPrint(char* str);
 
 #endif //ARTIFICIAL_INTELLIGENCE_UTIL_H

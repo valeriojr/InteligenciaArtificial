@@ -74,9 +74,14 @@ extern STATE##ValidationFunction STATE##Validate;\
 extern STATE##GoalFunction STATE##Goal;\
 \
 /*
- * Função de avaliação (obrigatória)
+ * Função de avaliação
  */\
 extern STATE##ScoreFunction STATE##Score;\
+\
+/*
+ * Função de heurística (A*)
+ */\
+extern STATE##ScoreFunction STATE##Heuristic;\
 \
 /*
  * Função de imprimir estado (opcional)
@@ -85,15 +90,18 @@ extern STATE##PrintFunction STATE##Print;\
 \
 void STATE##GetActionName(char* dest, int index);\
 \
+float STATE##UniformCost(STATE* state);\
 
 #define DEFINE_STATE(STATE, ...)\
 STATE##Action STATE##Actions[] = {__VA_ARGS__};\
 int STATE##ActionCount = sizeof(STATE##Actions) / sizeof(STATE##Action);\
 char STATE##ActionNames[] = #__VA_ARGS__;\
-STATE##ValidationFunction STATE##Validate;\
-STATE##GoalFunction STATE##Goal;\
-STATE##ScoreFunction STATE##Score;\
-STATE##PrintFunction STATE##Print;\
+\
+STATE##ValidationFunction STATE##Validate = NULL;\
+STATE##GoalFunction STATE##Goal = NULL;\
+STATE##ScoreFunction STATE##Score = STATE##UniformCost;\
+STATE##ScoreFunction STATE##Heuristic = NULL;\
+STATE##PrintFunction STATE##Print = NULL;\
 /*
  * Copia o nome do operador com índice index para o endereço dest
  */\
@@ -117,6 +125,9 @@ void STATE##GetActionName(char* dest, int index){\
     }\
     \
     *dest = '\0';\
+}\
+float STATE##UniformCost(STATE* state){\
+    return 1.0f;\
 }\
 
 #endif //ARTIFICIALINTELLIGENCE_STATE_H
