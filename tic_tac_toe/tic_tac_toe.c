@@ -1,5 +1,7 @@
-#include <stdio.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 #include "../data_structures/linked_list.h"
 #include "../search/state_space_search.h"
 #include "tic_tac_toe.h"
@@ -41,7 +43,12 @@ DEFINE_MINIMAX(TicTacToeState,
 void TicTacToeMakeMove(int actionIndex, int score, TicTacToeState* state) {
     match = TicTacToeStateActions[actionIndex](match);
     TicTacToeCurrentPlayer = match.player;
-    printBoard(&match);
+
+    char action[256];
+    TicTacToeStateGetActionName(action, actionIndex);
+    printf("Player %d:", (!TicTacToeCurrentPlayer) + 1);
+    prettyPrint(action);
+    printf("\n");
 }
 
 TicTacToeState Mark(int row, int col, TicTacToeState state) {
@@ -59,7 +66,7 @@ TicTacToeState Mark(int row, int col, TicTacToeState state) {
     return state;
 }
 
-int validateBoard(TicTacToeState *state) {
+int validateBoard(TicTacToeState* state) {
     int i, j;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
@@ -72,7 +79,7 @@ int validateBoard(TicTacToeState *state) {
     return 1;
 }
 
-int goalBoard(TicTacToeState *state) {
+int goalBoard(TicTacToeState* state) {
     int i, j;
 
     int won = 0;
@@ -106,29 +113,38 @@ void printBoard(TicTacToeState* state) {
     printf("\n");
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-            char s[6];
+            char s = ' ';
             switch (state->board[i][j]) {
                 case X:
-                    strcpy(s, "  X  ");
+                    s = 'X';
                     break;
                 case O:
-                    strcpy(s, "  O  ");
+                    s = 'O';
                     break;
                 case EMPTY:
-                    sprintf(s, "  %d  ", 3 * i + j + 1);
-                    break;
-                case INVALID:
-                    strcpy(s, " X-O ");
+                    if(printNumbers){
+                        s = '0' + 3 * i + j + 1;
+                    }
+                    else {
+                        s = ' ';
+                    }
                     break;
             }
-            printf("%s", s);
+            if (i <= 1) {
+                printf("_%c_", s);
+            } else {
+                printf(" %c ", s);
+            }
+            if (j <= 1) {
+                printf("|");
+            }
         }
         printf("\n");
     }
     printf("\n");
 }
 
-int drawBoard(TicTacToeState *state) {
+int drawBoard(TicTacToeState* state) {
     int i, j;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
@@ -138,10 +154,10 @@ int drawBoard(TicTacToeState *state) {
         }
     }
 
-    return goalBoard(state) || loseBoard(state);
+    return !goalBoard(state) || !loseBoard(state);
 }
 
-int rowScore(TicTacToeState *state, int row, int p) {
+int rowScore(TicTacToeState* state, int row, int p) {
     int score = 1;
     int count = 0;
     int i;
@@ -155,7 +171,7 @@ int rowScore(TicTacToeState *state, int row, int p) {
     return score;
 }
 
-int colScore(TicTacToeState *state, int col, int p) {
+int colScore(TicTacToeState* state, int col, int p) {
     int score = 1;
     int count = 0;
     int i;
@@ -169,7 +185,7 @@ int colScore(TicTacToeState *state, int col, int p) {
     return score;
 }
 
-int diagScore(TicTacToeState *state, int diag, int p) {
+int diagScore(TicTacToeState* state, int diag, int p) {
     int score = 1;
     int count = 0;
     int i;
@@ -184,34 +200,52 @@ int diagScore(TicTacToeState *state, int diag, int p) {
     return score;
 }
 
-float ticTacToeScore(TicTacToeState *state) {
+float ticTacToeScore(TicTacToeState* state) {
     float score = 0;
 
     if (goalBoard(state)) {
-        return INT_MAX;
-    } else {
-        if (loseBoard(state)) {
-            score = INT_MIN;
-        } else {
-            int i, j;
-            int points[3][3] = {
-                    {1, 1, 1},
-                    {1, 2, 1},
-                    {1, 1, 1}
-            };
-            for (i = 0; i < 3; i++) {
-                for (j = 0; j < 3; j++) {
-                    score += (points[i][j] * (state->board[i][j] == TicTacToeCurrentPlayer)) -
-                             (points[i][j] * (state->board[i][j] == !TicTacToeCurrentPlayer));
-                }
+        return INFINITY;
+    }
+
+    if (loseBoard(state)) {
+        return -INFINITY;
+    }
+
+    int i, j;
+    int points[3][3] = {
+            {1, 1, 1},
+            {1, 2, 1},
+            {1, 1, 1}
+    };
+    /*
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            if (state->board[i][j] == TicTacToeCurrentPlayer) {
+                score += points[i][j];
+            } else if (state->board[i][j] == !TicTacToeCurrentPlayer) {
+                score -= points[i][j];
             }
         }
     }
+    */
+    for(i = 0;i < 3;i++){
+        score += rowScore(state, i, TicTacToeCurrentPlayer);
+        score += colScore(state, i, TicTacToeCurrentPlayer);
+
+        score -= rowScore(state, i, !TicTacToeCurrentPlayer);
+        score -= colScore(state, i, !TicTacToeCurrentPlayer);
+    }
+
+    score += diagScore(state, 0, TicTacToeCurrentPlayer);
+    score += diagScore(state, 1, TicTacToeCurrentPlayer);
+
+    score -= diagScore(state, 0, !TicTacToeCurrentPlayer);
+    score -= diagScore(state, 1, !TicTacToeCurrentPlayer);
 
     return score;
 }
 
-int loseBoard(TicTacToeState *state) {
+int loseBoard(TicTacToeState* state) {
     TicTacToeCurrentPlayer = !TicTacToeCurrentPlayer;
     int r = goalBoard(state);
     TicTacToeCurrentPlayer = !TicTacToeCurrentPlayer;

@@ -16,21 +16,25 @@ enum {
 
 #define DECLARE_MINIMAX(STATE, ...)\
 DECLARE_STATE(STATE)\
-int STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child);\
+float STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child);\
 \
 void STATE##Minimax(STATE* currentState, int depth, void(*callback)(int, int, STATE*));\
 
 #define DEFINE_MINIMAX(STATE, ...)\
 DEFINE_STATE(STATE, __VA_ARGS__)\
-int STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child){\
+float STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child){\
     if(!depth){\
-        return STATE##Score(currentState);\
+        /*printf("------\nMaximum depth reached:\n");*/\
+        /*STATE##Print(currentState);*/\
+        float s = STATE##Score(currentState);\
+        /*printf("Score: %.0f\n------\n", s);*/\
+        return s;\
     }\
-    int alpha;\
+    float alpha;\
     int childCount = 0;\
     \
     if(turn == MAX){\
-        alpha = INT_MIN;\
+        alpha = -INFINITY;\
         \
         int i;\
         for(i = 0;i < STATE##ActionCount;i++){\
@@ -48,7 +52,7 @@ int STATE##MinimaxSearch(STATE* currentState, int turn, int depth, int* child){\
         return childCount ? alpha : STATE##Score(currentState);\
     }\
     else {\
-        alpha = INT_MAX;\
+        alpha = INFINITY;\
         \
         int i;\
         for(i = 0;i < STATE##ActionCount;i++){\

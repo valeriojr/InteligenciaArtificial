@@ -107,7 +107,6 @@ void SubwayPrint(struct Station* state) {
 }
 
 int SubwayValidate(Station* state) {
-    //printf("Valid state: %s\n", state->color != Invalid ? "True" : "False");
     return state->color != Invalid;
 
 }

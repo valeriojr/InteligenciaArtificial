@@ -15,7 +15,7 @@
 
 // Constantes
 
-#define DEPTH 10
+#define DEPTH 2
 enum {
     INVALID = -2, EMPTY = -1, X, O
 };
@@ -34,6 +34,7 @@ typedef struct TicTacToeState {
 
 extern int TicTacToeCurrentPlayer;
 extern TicTacToeState match;
+int printNumbers;
 
 //----------------------------------------------------------------------------------------------------------------------
 
